@@ -17,7 +17,7 @@ class SleepTrackerViewModel(
 
     private var tonight = MutableLiveData<SleepNight?>()
 
-    private val nights = database.getAllNights()
+    val nights = database.getAllNights()
 
     /**
      * Converted nights to Spanned for displaying.
@@ -26,16 +26,10 @@ class SleepTrackerViewModel(
         formatNights(nights, application.resources)
     }
 
-    /**
-     * Variable that tells the Fragment to navigate to a specific [SleepQualityFragment]
-     *
-     * This is private because we don't want to expose setting this value to the Fragment.
-     */
+
     private val _navigateToSleepQuality = MutableLiveData<SleepNight?>()
 
-    /**
-     * If this is non-null, immediately navigate to [SleepQualityFragment] and call [doneNavigating]
-     */
+
     val navigateToSleepQuality: MutableLiveData<SleepNight?>
         get() = _navigateToSleepQuality
 
@@ -59,12 +53,11 @@ class SleepTrackerViewModel(
         _showSnackbarEvent.value = false
     }
 
-    /**
-     * Call this immediately after navigating to [SleepQualityFragment]
-     *
-     * It will clear the navigation request, so if the user rotates their phone it won't navigate
-     * twice.
-     */
+    private val _navigateToSleepDataQuality = MutableLiveData<Long?>()
+    val navigateToSleepDataQuality
+        get() = _navigateToSleepDataQuality
+
+
     fun doneNavigating() {
         _navigateToSleepQuality.value = null
     }
@@ -164,6 +157,15 @@ class SleepTrackerViewModel(
             _showSnackbarEvent.value = true
 
         }
+    }
+
+    fun onSleepNightClicked(nightId: Long) {
+        _navigateToSleepDataQuality.value = nightId
+
+    }
+
+    fun onSleepDataQualityNavigated() {
+        _navigateToSleepDataQuality.value = null
     }
 }
 /**
